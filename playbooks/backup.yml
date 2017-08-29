@@ -5,12 +5,12 @@
 
   tasks:
     - name: grab running configuration
-      net_command:
+      ios_command:
         commands:
           - show run
       register: config
 
-    - name: save output to ansible/network-example/backups
+    - name: save output to backups directory
       copy:
         content: "{{config.stdout[0]}}"
         dest: "backups/show_run_{{inventory_hostname}}.txt"
