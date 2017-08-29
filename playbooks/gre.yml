@@ -1,0 +1,27 @@
+---
+- name: R1 gre configuration
+  hosts: student1-rtr1.net-ws.redhatgov.io
+  connection: local
+
+  tasks:
+    - name: create tunnel interface
+      ios_config:
+        lines:
+         - ip address 10.0.0.1 255.255.255.0
+         - tunnel source GigabitEthernet1
+         - tunnel destination 52.15.93.123
+      parents: interface Tunnel 0
+
+
+- name: R1 gre configuration
+  hosts: student2-rtr1.net-ws.redhatgov.io
+  connection: local
+
+  tasks:
+    - name: create tunnel interface
+      ios_config:
+        lines:
+         - ip address 10.0.0.2 255.255.255.0
+         - tunnel source GigabitEthernet1
+         - tunnel destination 18.220.223.21
+      parents: interface Tunnel 0

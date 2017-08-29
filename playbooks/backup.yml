@@ -1,0 +1,16 @@
+---
+- name: backup router configurations
+  hosts: routers
+  connection: local
+
+  tasks:
+    - name: grab running configuration
+      net_command:
+        commands:
+          - show run
+      register: config
+
+    - name: save output to ansible/network-example/backups
+      copy:
+        content: "{{config.stdout[0]}}"
+        dest: "backups/show_run_{{inventory_hostname}}.txt"
