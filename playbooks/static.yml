@@ -1,0 +1,19 @@
+---
+- name: enable interface if R2 is compliant
+  hosts: routers
+  connection: local
+
+  tasks:
+    - name: configure static route from R1 to R2
+      net_static_route:
+        prefix: 172.18.2.0
+        mask: 255.255.255.0
+        nexthop: 10.0.0.2
+      when: '"rtr1" in inventory_hostname'
+
+    - name: configure static route from R2 to R1
+      net_static_route:
+        prefix: 172.17.1.0
+        mask: 255.255.255.0
+        nexthop: 10.0.0.1
+      when: '"rtr2" in inventory_hostname'

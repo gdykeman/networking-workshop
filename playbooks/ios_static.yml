@@ -1,0 +1,21 @@
+---
+- name: R1 static config
+  hosts: student1-rtr1.net-ws.redhatgov.io
+  connection: local
+
+  tasks:
+    - name: Static route on R1 to R2
+      ios_config:
+        lines:
+          - ip route 172.18.2.0 255.255.255.0 10.0.0.2
+
+---
+- name: R2 static config
+  hosts: student1-rtr2.net-ws.redhatgov.io
+  connection: local
+
+  tasks:
+    - name: Static route on R2 to R1
+      ios_config:
+        lines:
+          - ip route 172.17.1.0 255.255.255.0 10.0.0.1
