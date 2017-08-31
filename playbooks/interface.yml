@@ -2,20 +2,22 @@
 - name: enable interface if R2 is compliant
   hosts: student1-rtr2.net-ws.redhatgov.io
   connection: local
+  gather_facts: no
 
   tasks:
-    - name: capture show version
-      ios_command:
-        commands:
-          - show version
+    - name: gather ios_facts
+      ios_facts:
       register: version
+
+    - debug:
+        msg: "{{version}}"
 
     - name: shutdown GigabitEthernet2 if not compliant
       net_interface:
         name: GigabitEthernet2
         description: not-compliant
         state: down
-      when: not 'Version 16.5.1b' in version.stdout[0]
+      when: not version.ansible_facts.ansible_net_version == "16.5.1b"
 
     - block:
       - name: enable GigabitEthernet2 interface if compliant
@@ -29,4 +31,4 @@
             - ip address dhcp
           parents: interface GigabitEthernet2
 
-      when: '"Version 16.5.1b" in version.stdout[0]'
+      when: version.ansible_facts.ansible_net_version == "16.5.1b"
