@@ -1,16 +1,16 @@
 ---
 - name: backup router configurations
   hosts: routers
-  connection: local
+  gather_facts: no
 
   tasks:
-    - name: grab running configuration
-      ios_command:
-        commands:
-          - show run
+    - name: Backup configuration
+      ios_config:
+        backup: yes
       register: config
 
-    - name: save output to backups directory
-      copy:
-        content: "{{config.stdout[0]}}"
-        dest: "backups/show_run_{{inventory_hostname}}.txt"
+    - name: Create link to most recent config
+      file:
+        src: "{{ config.backup_path }}"
+        dest: "./backup/{{ inventory_hostname }}"
+        state: link
