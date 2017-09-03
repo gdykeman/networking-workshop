@@ -1,0 +1,54 @@
+---
+- name: Router Configurations
+  hosts: routers
+  gather_facts: no
+  vars:
+    dns_servers:
+      - 8.8.8.8
+      - 8.8.4.4
+  tasks:
+    - name: gather ios_facts
+      ios_facts:
+      register: version
+
+    ##Configuration for R1
+    - block:
+      - name: Static route from R1 to R2
+        ios_config:
+          lines:
+            - ip route 172.18.2.0 255.255.255.0 10.0.0.2
+      - name: configure name servers
+        net_system:
+          name_servers: "{{item}}"
+        with_items: "{{dns_servers}}"
+      when:
+        - 'version.ansible_facts.ansible_net_version == "16.5.1b"'
+        - '"rtr1" in inventory_hostname'
+
+    ##Configuration for R2
+    - block:
+      - name: enable GigabitEthernet2 interface if compliant
+        net_interface:
+          name: GigabitEthernet2
+          description: interface to host1
+          state: present
+
+      - name: dhcp configuration for GigabitEthernet2
+        ios_config:
+          lines:
+            - ip address dhcp
+          parents: interface GigabitEthernet2
+
+      - name: Static route from R2 to R1
+        ios_config:
+          lines:
+            - ip route 172.17.1.0 255.255.255.0 10.0.0.1
+
+      - name: configure name servers
+        net_system:
+          name_servers: "{{item}}"
+        with_items: "{{dns_servers}}"
+
+      when:
+        - 'version.ansible_facts.ansible_net_version == "16.5.1b"'
+        - '"rtr2" in inventory_hostname'
