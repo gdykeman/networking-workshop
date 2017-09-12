@@ -2,6 +2,7 @@
 - name: Router Configurations
   hosts: routers
   gather_facts: no
+  connection: local
   vars:
     dns_servers:
       - 8.8.8.8
