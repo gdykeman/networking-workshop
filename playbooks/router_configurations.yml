@@ -39,7 +39,6 @@
             - ip address dhcp
           parents: interface GigabitEthernet2
       - name: Static route from R2 to R1
-        net_static_route:
         ios_config:
           lines:
             - ip route "{{prefix_control_subnet}}" 255.255.255.0 10.0.0.1
