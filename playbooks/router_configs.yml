@@ -14,15 +14,16 @@
     ##Configuration for R1
     - block:
       - name: Static route from R1 to R2
-        ios_config:
-          lines:
-            - ip route 172.18.2.0 255.255.255.0 10.0.0.2
+        net_static_route:
+          prefix: 172.18.2.0
+          mask: 255.255.255.0
+          next_hop: 10.0.0.2
       - name: configure name servers
         net_system:
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "16.5.1b"'
+        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
         - '"rtr1" in inventory_hostname'
 
     ##Configuration for R2
@@ -32,23 +33,20 @@
           name: GigabitEthernet2
           description: interface to host1
           state: present
-
       - name: dhcp configuration for GigabitEthernet2
         ios_config:
           lines:
             - ip address dhcp
           parents: interface GigabitEthernet2
-
       - name: Static route from R2 to R1
-        ios_config:
-          lines:
-            - ip route 172.17.1.0 255.255.255.0 10.0.0.1
-
+        net_static_route:
+          prefix: 172.17.1.0
+          mask: 255.255.255.0
+          next_hop: 10.0.0.1
       - name: configure name servers
         net_system:
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
-
       when:
-        - 'version.ansible_facts.ansible_net_version == "16.5.1b"'
+        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
         - '"rtr2" in inventory_hostname'
