@@ -17,13 +17,13 @@
       - name: Static route from R1 to R2
         ios_config:
           lines:
-            - ip route "{{prefix_host_subnet}}" 255.255.255.0 10.0.0.2
+            - ip route {{prefix_host_subnet}} 255.255.255.0 10.0.0.2
       - name: configure name servers
         net_system:
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "{{ios_version}}"'
+        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
         - '"rtr1" in inventory_hostname'
 
     ##Configuration for R2
@@ -41,11 +41,11 @@
       - name: Static route from R2 to R1
         ios_config:
           lines:
-            - ip route "{{prefix_control_subnet}}" 255.255.255.0 10.0.0.1
+            - ip route {{prefix_control_subnet}} 255.255.255.0 10.0.0.1
       - name: configure name servers
         net_system:
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "{{ios_version}}"'
+        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
         - '"rtr2" in inventory_hostname'
