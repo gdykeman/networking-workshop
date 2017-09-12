@@ -15,7 +15,7 @@
     - block:
       - name: Static route from R1 to R2
         net_static_route:
-          prefix: 172.18.2.0
+          prefix: "{{prefix_host_subnet}}"
           mask: 255.255.255.0
           next_hop: 10.0.0.2
       - name: configure name servers
@@ -23,7 +23,7 @@
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
+        - 'version.ansible_facts.ansible_net_version == "{{ios_version}}"'
         - '"rtr1" in inventory_hostname'
 
     ##Configuration for R2
@@ -40,7 +40,7 @@
           parents: interface GigabitEthernet2
       - name: Static route from R2 to R1
         net_static_route:
-          prefix: 172.17.1.0
+          prefix: "{{prefix_control_subnet}}"
           mask: 255.255.255.0
           next_hop: 10.0.0.1
       - name: configure name servers
@@ -48,5 +48,5 @@
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
+        - 'version.ansible_facts.ansible_net_version == "{{ios_version}}"'
         - '"rtr2" in inventory_hostname'
