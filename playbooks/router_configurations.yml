@@ -23,7 +23,7 @@
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
+        - 'version.ansible_facts.ansible_net_version == ios_version'
         - '"rtr1" in inventory_hostname'
 
     ##Configuration for R2
@@ -47,5 +47,5 @@
           name_servers: "{{item}}"
         with_items: "{{dns_servers}}"
       when:
-        - 'version.ansible_facts.ansible_net_version == "16.05.01b"'
+        - 'version.ansible_facts.ansible_net_version == ios_version'
         - '"rtr2" in inventory_hostname'
